@@ -1,12 +1,12 @@
 import focal_track
 from dtaidistance import dtw, dtw_ndim, dtw_visualisation
 import numpy
+import tensorflow as tf
 
-scenario_dir = 'C:\\Users\\ishaa\\source\\repos\\sce_dist\\justTwoScenarios'
-tracks = focal_track.getAllFocalTracks(scenario_dir)
-
-scenario_dir = 'C:\\Users\\ishaa\\source\\repos\\sce_dist\\justTwoScenarios'
-tracks = focal_track.getAllFocalTracks(scenario_dir) #All scenarios in the directory
+def getAllFocalTracks():
+    scenario_dir = 'C:\\Users\\ishaa\\source\\repos\\sce_dist\\justTwoScenarios'
+    tracks = focal_track.getAllFocalTracks(scenario_dir) #All scenarios in the directory
+    return tracks
 
 # Rescaling and reordering between [0-1] and increasing 
 def rescaleTrack(track):
@@ -19,14 +19,17 @@ def rescaleTrack(track):
         scaled_track.append(numpy.array([i[0], i[1]]))
     return scaled_track
 
-
+# Function below rescales tracks and creates a list of tensors, one tensor 
+# for each track
 def rescaleTracks(tracks):
-    np_tracks_scaled = []
+    tracks_scaled, track_tensors = [], []
     for track in tracks:
         np_track = numpy.array(track)
-        np_track_scaled = rescaleTrack(np_track)
-        np_tracks_scaled.append(np_track_scaled)
-    return np_tracks_scaled
+        track_scaled = rescaleTrack(np_track)
+        np_track_scaled = numpy.array(track_scaled) #One list inside each array
+        #tracks_scaled.append(np_track_scaled) #A list of numpy arrays
+        track_tensors.append(tf.stack([i for i in tf.data.Dataset.from_tensor_slices(np_track_scaled)]))
+    return track_tensors
 
 '''
 # Create a vector containing distance measures between the first track and 
