@@ -1,9 +1,0 @@
-# Stick to Gem versions used by GitHub Pages
-# https://pages.github.com/versions/
-Gemfile.lock
-
-# Jekyll
-_site/
-.sass-cache/
-.jekyll-cache/
-.jekyll-metadata
